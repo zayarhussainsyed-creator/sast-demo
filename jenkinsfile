@@ -1,1 +1,47 @@
 
+pipeline {
+    agent any
+
+    tools {
+        maven 'Maven-3'
+    }
+
+    stages {
+        stage('Build') {
+            steps {
+                bat 'mvn clean package'
+            }
+        }
+
+        stage('SonarQube Analysis') {
+            steps {
+                withCredentials([
+                    string(
+                        credentialsId: 'sonar-token',
+                        variable: 'SONAR_TOKEN'
+                    )
+                ]) {
+                    withSonarQubeEnv('SonarQube') {
+                        bat '''
+                            mvn org.sonarsource.scanner.maven:sonar-maven-plugin:5.8.0.7211:sonar -Dsonar.projectKey=sast-demo -Dsonar.projectName="SAST Demo" -Dsonar.token=%SONAR_TOKEN%
+                        '''
+                    }
+                }
+            }
+        }
+    }
+
+    post {
+        success {
+            echo 'SUCCESS: Build and SonarQube Analysis completed!'
+        }
+
+        failure {
+            echo 'FAILED: Check the Jenkins Console Output.'
+        }
+
+        always {
+            echo 'Pipeline execution finished.'
+        }
+    }
+}
