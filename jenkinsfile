@@ -1,4 +1,3 @@
-
 pipeline {
     agent any
 
@@ -23,7 +22,7 @@ pipeline {
                 ]) {
                     withSonarQubeEnv('SonarQube') {
                         bat '''
-                            mvn org.sonarsource.scanner.maven:sonar-maven-plugin:5.8.0.7211:sonar -Dsonar.projectKey=sast-demo -Dsonar.projectName="SAST Demo" -Dsonar.token=%SONAR_TOKEN%
+                            mvn org.sonarsource.scanner.maven:sonar-maven-plugin:5.8.0.7211:sonar -Dsonar.projectKey=SAST-Demo -Dsonar.projectName="SAST Demo" -Dsonar.token=%SONAR_TOKEN%
                         '''
                     }
                 }
